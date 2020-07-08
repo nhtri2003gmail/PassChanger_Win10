@@ -30,6 +30,8 @@ This is a guide
 
 8) Restart computer and enjoy :)))
 
+
+
 *Note: 
 You can add user to admin group by this command:
 
