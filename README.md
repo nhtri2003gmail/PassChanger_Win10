@@ -30,7 +30,13 @@ This is a guide
 		sc create PassChanger binPath="path"
 	which path is the permernant path to the "Run.exe" file(Step 6)
 
-8) Restart computer and enjoy :)))
+8) Open Task Manager by pressing Win+R and type "taskmgr" without quote
+
+9) Choose tab Services --> click on "Open Services" at the bottom of the box, it will open Services box
+
+10) Look for item's name is PassChanger and double click on it
+
+11) With regard to "Startup type", choose "Automatic" or "Automatic(Delayed Start)" --> Apply --> OK
 
 ------------------------------------------------------------------------
 
