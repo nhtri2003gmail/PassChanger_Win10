@@ -1,4 +1,6 @@
-This is a guide
+Requirement: Python3.x installed
+
+Link download Python: https://www.python.org/downloads/
 
 ------------------------------------------------------------------------
 
