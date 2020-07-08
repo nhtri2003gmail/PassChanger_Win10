@@ -1,5 +1,7 @@
 This is a guide
 
+------------------------------------------------------------------------
+
 *Setup:
 1) Edit MyAddr, MyPass, ToAddr and UserName in "Run.py" before using
 
@@ -30,7 +32,7 @@ This is a guide
 
 8) Restart computer and enjoy :)))
 
-
+------------------------------------------------------------------------
 
 *Note: 
 You can add user to admin group by this command:
