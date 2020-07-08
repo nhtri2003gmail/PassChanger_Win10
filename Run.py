@@ -5,7 +5,7 @@ import random
 import smtplib                                       
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-                                                     
+                                              
 MyAddr = 'emailsender@gmail.com'        # Email Sender
 MyPass = 'emailsenderpassword'          # Password Sender                                 
 ToAddr = 'emailreceiver@gmail.com'      # Email Receiver
@@ -37,6 +37,8 @@ def SendMail(newPass):
 #########################################################
 
 def SetPass(newPass):
+    cmd = 'net user ' + UserName + ' /add'          # Make sure the user always exist
+    os.system(cmd)
     cmd = 'net user "' + UserName + '" "' + newPass + '"'
     os.system(cmd)
 
