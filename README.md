@@ -1,4 +1,4 @@
-This is an interesting application which I inspirationally created, it's just for fun and I don't know how can it be useful :)))
+This is an interesting application which I inspirationally created, it's just for fun and I don't know how it can be useful :)))
 
 It's written in Python and if you want to try, you can have a look
 
