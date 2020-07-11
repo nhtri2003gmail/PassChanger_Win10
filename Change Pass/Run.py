@@ -7,7 +7,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
                                               
 MyAddr = 'emailsender@gmail.com'        # Email Sender
-MyPass = 'emailsenderpassword'          # Password Sender                                 
+MyPass = 'emailsenderpassword'          # Password Sender
 ToAddr = 'emailreceiver@gmail.com'      # Email Receiver
 UserName = 'username'                   # Username need to change pass
    

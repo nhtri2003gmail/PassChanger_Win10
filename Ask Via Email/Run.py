@@ -137,33 +137,18 @@ def Chatting():
     mail.logout()
     print('[+] Done')
 
-################################################################################################################
-
-import os
-
-def ExeCommand():
-    print("Type \"Exit\" to quit")
-    while(True):
-        cmd = input("> ")
-        if(cmd=='Exit' or cmd=='exit'):
-            os.system('cls')
-            break
-        os.system(cmd)
+########################################################
 
 import os
 
 if __name__=='__main__':
     while(True):
         print('1. Send email')
-        print('2. Execute command')
-        print('3. Exit')
+        print('2. Exit')
         c = input("> ")
         if(c=='1'):
             Chatting()
         elif(c=='2'):
-            os.system('cls')
-            ExeCommand()
-        elif(c=='3'):
             break
         else:
             os.system('cls')
