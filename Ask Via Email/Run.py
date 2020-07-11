@@ -1,12 +1,10 @@
-import smtplib
-import time
-
-MyAddr = 'emailsender@gmail.com'        # Email Sender
-MyPass = 'emailsenderpassword'          # Password Sender                                 
-ToAddr = 'emailreceiver@gmail.com'      # Email Receiver
+MyAddr = 'username@gmail.com'
+MyPass = 'password'
+ToAddr = 'username@gmail.com'
 
 ########################################################
 
+import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -45,8 +43,7 @@ def SendMail():
 ########################################################
 
 import imaplib
-from email.parser import Parser
-from email._policybase import compat32
+import email
 
 def ReadMail(mostRecentNow):
     ## Set up server
@@ -59,9 +56,29 @@ def ReadMail(mostRecentNow):
     mail.select("INBOX")
 
     ## Fetch email
-    result, data = mail.uid('fetch', mostRecentNow, "(RFC822)")
-    print(data[0][1])
-    
+    result, data = mail.fetch(mostRecentNow, "(RFC822)")
+
+    for item in data:
+        if isinstance(item, tuple):
+            msg = email.message_from_bytes(item[1])
+
+            subject = msg['Subject']
+
+            if msg.is_multipart():
+                for part in msg.walk():
+                    content_type = part.get_content_type()
+                    try:
+                        body = part.get_payload(decode=True).decode()
+                    except:
+                        pass
+                    if content_type=='text/plain':
+                        print('\nJohnathan Huu Tri\'s reply:')
+                        print(f'\nSubject: {subject}')
+                        print('Body:')
+                        print(body)
+    mail.close()
+    mail.logout()
+                    
 ########################################################
 
 import imaplib
@@ -77,7 +94,7 @@ def CountMail():
     mail.select("INBOX")
 
     ## Get emails
-    result, data = mail.uid('search', None, "ALL")
+    result, data = mail.search(None, "ALL")
     inboxItem = data[0].split()
 
     ## Get the latest email id
@@ -88,18 +105,28 @@ def CountMail():
     
     return c, mostRecent
 
+########################################################
+
+import time
+from datetime import datetime
+
 if __name__=='__main__':
     print('[+] Welcome to the communication with Johnathan Huu Tri via Email!')
     print(f'[+] Your current email adress is {MyAddr}!')
     c, mostRecent = CountMail()
-    print(c, " ", mostRecent)
     mostRecent = mostRecent.decode()
-    
-##    SendMail()
 
-    cNow, mostRecentNow = CountMail()
-    print(cNow, " ", mostRecentNow)
-    while(c<=cNow and mostRecent<=mostRecentNow.decode()):
+    while(True):
+##        SendMail()
+        print()
+        
         cNow, mostRecentNow = CountMail()
+        while(cNow<=c and mostRecentNow.decode()<=mostRecent):
+            cNow, mostRecentNow = CountMail()
+            tNow = str(datetime.now().time())
+            print(f'\rUpdated at {tNow}', end='')
+            time.sleep(1)
+        
         ReadMail(mostRecentNow)
-        time.sleep(1)
+        c, mostRecent = CountMail()
+        mostRecent = mostRecent.decode()
