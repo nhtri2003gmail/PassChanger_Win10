@@ -1,25 +1,20 @@
-MyAddr = 'username@gmail.com'
-MyPass = 'password'
-ToAddr = 'username@gmail.com'
+MyAddr = 'emailsender@gmail.com'        # Email Sender
+MyPass = 'emailsenderpassword'          # Password Sender
+ToAddr = 'emailreceiver@gmail.com'      # Email Receiver
 
 ########################################################
 
-import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
-def SendMail():
-    ## Setup SMTP server
-    s=smtplib.SMTP(host='smtp.gmail.com', port=587)
-    s.starttls()
-    s.login(MyAddr, MyPass)
+def SendMail(s):
 
     ## User Input
     print('What do you want to ask?')
     mes = input("> ")
-    print(f'[+] Sending email to {ToAddr}...')
     
-    ## Send mail
+    print(f'[+] Sending email to {ToAddr}...')
+    ## Create email packet
     msg=MIMEMultipart()
 
     ## Fill parameters
@@ -34,7 +29,6 @@ def SendMail():
     s.send_message(msg)
 
     del msg
-    s.close()
     print("[+] Successfully sent email!")
     print('------------------------------------------------------------------')
     print('[+] He might be busy at the moment, please wait or try again later')
@@ -42,16 +36,9 @@ def SendMail():
 
 ########################################################
 
-import imaplib
 import email
 
-def ReadMail(mostRecentNow):
-    ## Set up server
-    mail = imaplib.IMAP4_SSL("smtp.gmail.com")
-
-    ## Login
-    mail.login(MyAddr, MyPass)
-
+def ReadMail(mail, mostRecentNow):
     ## Choose Inbox
     mail.select("INBOX")
 
@@ -60,7 +47,7 @@ def ReadMail(mostRecentNow):
 
     for item in data:
         if isinstance(item, tuple):
-            msg = email.message_from_bytes(item[1])
+            msg = email.message_from_bytes(item[1])     ## Using email module
 
             subject = msg['Subject']
 
@@ -72,24 +59,12 @@ def ReadMail(mostRecentNow):
                     except:
                         pass
                     if content_type=='text/plain':
-                        print('\nJohnathan Huu Tri\'s reply:')
-                        print(f'\nSubject: {subject}')
-                        print('Body:')
+                        print(subject)
                         print(body)
-    mail.close()
-    mail.logout()
                     
 ########################################################
 
-import imaplib
-
-def CountMail():
-    ## Set up server
-    mail = imaplib.IMAP4_SSL("smtp.gmail.com")
-
-    ## Login
-    mail.login(MyAddr, MyPass)
-
+def CountMail(mail):
     ## Choose Inbox
     mail.select("INBOX")
 
@@ -108,25 +83,87 @@ def CountMail():
 ########################################################
 
 import time
+import smtplib
+import imaplib
 from datetime import datetime
 
-if __name__=='__main__':
+def Chatting():
     print('[+] Welcome to the communication with Johnathan Huu Tri via Email!')
     print(f'[+] Your current email adress is {MyAddr}!')
-    c, mostRecent = CountMail()
+    print()
+    
+    ## Setup SMTP server
+    print('[+] Setting up SMTP server...')
+    s=smtplib.SMTP(host='smtp.gmail.com', port=587)     ## Using smtplib
+    s.starttls()
+    s.login(MyAddr, MyPass)
+    print('[+] Done')
+
+    ## Set up IMAP server
+    print('[+] Setting up IMAP server...')
+    mail = imaplib.IMAP4_SSL("smtp.gmail.com")          ## Using imaplib
+    mail.login(MyAddr, MyPass)
+    print('[+] Done\n')
+    
+    c, mostRecent = CountMail(mail)
     mostRecent = mostRecent.decode()
 
+    SendMail(s)
+
+    cNow, mostRecentNow = CountMail(mail)
+    while(cNow<=c and mostRecentNow.decode()<=mostRecent):
+        ## Get update with cNow and mostRecentNow
+        cNow, mostRecentNow = CountMail(mail)
+        
+        if(not(cNow<=c and mostRecentNow.decode()<=mostRecent)):
+            print('\r[+] Received!                 ')
+            print('------------------------------------------------------------------')
+        else:
+            tNow = str(datetime.now().time())           ## Using datetime
+            print(f'\r[+] Updated at {tNow}', end='')
+        time.sleep(1)                               ## Using time
+    
+    ReadMail(mail, mostRecentNow)
+    print('------------------------------------------------------------------')
+
+    ## Closing SMTP server
+    print('[+] Shuting down SMTP server')
+    s.close()
+    print('[+] Done')
+
+    ## Closing IMAP server
+    print('[+] Shuting down IMAP server')    
+    mail.close()
+    mail.logout()
+    print('[+] Done')
+
+################################################################################################################
+
+import os
+
+def ExeCommand():
+    print("Type \"Exit\" to quit")
     while(True):
-##        SendMail()
-        print()
-        
-        cNow, mostRecentNow = CountMail()
-        while(cNow<=c and mostRecentNow.decode()<=mostRecent):
-            cNow, mostRecentNow = CountMail()
-            tNow = str(datetime.now().time())
-            print(f'\rUpdated at {tNow}', end='')
-            time.sleep(1)
-        
-        ReadMail(mostRecentNow)
-        c, mostRecent = CountMail()
-        mostRecent = mostRecent.decode()
+        cmd = input("> ")
+        if(cmd=='Exit' or cmd=='exit'):
+            os.system('cls')
+            break
+        os.system(cmd)
+
+import os
+
+if __name__=='__main__':
+    while(True):
+        print('1. Send email')
+        print('2. Execute command')
+        print('3. Exit')
+        c = input("> ")
+        if(c=='1'):
+            Chatting()
+        elif(c=='2'):
+            os.system('cls')
+            ExeCommand()
+        elif(c=='3'):
+            break
+        else:
+            os.system('cls')
